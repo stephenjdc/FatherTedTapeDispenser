@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 
 #define PIN_A 8
 #define PIN_B 9
@@ -22,6 +23,16 @@ int moving = 0;
 
 double startTime = 0;
 double endTime = 0;
+
+int getAmountUsed(int ticks) {
+    int ticksPerRotation = 24;
+    double rollRadiusInInches = 2;
+    double circumferenceInInches = M_PI * 2 * rollRadiusInInches;
+
+    double numberOfTurns = (double) ticks / (double) ticksPerRotation; 
+
+    return circumferenceInInches * numberOfTurns;
+}
 
 double getTime() {
     // long int start_time;
@@ -46,7 +57,7 @@ void setStartTime() {
 void update() {
     double interruptTime = getTime();
 
-    if (interruptTime - lastInterruptTime < 0.003) {
+    if (interruptTime - lastInterruptTime < 0.001) {
         printf("debounced!\n");
     } else {
         moving = 1;
@@ -57,7 +68,9 @@ void update() {
 }
 
 void runEvent() {
-    printf("%f", (double) totalMovement);
+    double totalDistance = getAmountUsed(totalMovement);
+
+    printf("%.0f inches used \n", (double) totalDistance);
     printf("This is when it would say the thing\n");
 }
 
