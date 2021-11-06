@@ -10,12 +10,15 @@
 #define EVENT_END_WAIT_TIME 0.5
 #define SLEEP_TIME 500000
 
+double lastInterruptTime = 0;
+
 int secondsMultiplier = 1000000;
 
+// the total movement for this event
 int totalMovement = 0;
 
+// track if an event is in progress
 int moving = 0;
-// clock_t lastMovementTime = 0;
 
 double startTime = 0;
 double endTime = 0;
@@ -25,7 +28,6 @@ double getTime() {
 	struct timespec gettime_now;
 
 	clock_gettime(CLOCK_REALTIME, &gettime_now);
-	// start_time = gettime_now.tv_sec;		//Get nS value
 
     double seconds = gettime_now.tv_sec;
     double billion = 1000000000;
@@ -42,26 +44,34 @@ void setStartTime() {
 }
 
 void update() {
-    moving = 1;
-    totalMovement++;
-    endTime = getTime();
+    double interruptTime = getTime();
 
-    // double timeSince = 
-
-    // printf("falling edge detected\n");
-    // printf("Total Movement: %f\n", (double) totalMovement);
-    // printf("Current Time: %f\n", timeSince);
+    if (interruptTime - lastInterruptTime < 0.003) {
+        printf("debounced!\n");
+    } else {
+        moving = 1;
+        totalMovement++;
+        endTime = getTime();
+        lastInterruptTime = interruptTime;
+    }
 }
 
 void runEvent() {
+    printf("%f", (double) totalMovement);
     printf("This is when it would say the thing\n");
+}
+
+void resetState() {
+    moving = 0;
+    totalMovement = 0;
 }
 
 void triggerEvent() {
     if (moving == 1) {
         if (timeSinceEnd() >= EVENT_END_WAIT_TIME) {
-            moving = 0;
+            // reset state and trigger event
             runEvent();
+            resetState();
         } else {
             printf("not long enough since last trigger\n");
         }
@@ -75,18 +85,14 @@ int main() {
     pinMode(PIN_A, INPUT);
 
     startTime = getTime();
+    lastInterruptTime = getTime();
 
     wiringPiISR (PIN_A, INT_EDGE_FALLING, update) ;
 
     // check for event every x seconds
     for (;;) {
-        // printf("Checking for changes...\n");
         triggerEvent();
-        // double timeSinceMovement = (double) (clock() - lastMovementTime)/CLOCKS_PER_SEC;
-        // printf("Time Since Movement: %f seconds\n", timeSinceMovement);
-
         usleep(SLEEP_TIME);
-        // sleep(99999999);
     }
 
     return 0;
