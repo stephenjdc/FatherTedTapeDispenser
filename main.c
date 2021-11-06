@@ -2,12 +2,10 @@
 #include <wiringPi.h>
 #include <time.h>
 #include <stdlib.h>
-
+#include <unistd.h>
 
 #define PIN_A 8
 #define PIN_B 9
-
-int loopTracker = 0;
 
 int secondsMultiplier = 1000000;
 
@@ -103,15 +101,11 @@ void loop() {
   lastState = State;
   lastStep = steps;
 
-  if (loopTracker > 1000) {
-    printf("%u", totalMovement);
-    printf("\n");
-    loopTracker = 0;
-  }
+  printf("%u", totalMovement);
+  printf("\n");
   
   // delayMicroseconds(500);
-  delay(1);
-  loopTracker++;
+  // delay(1);
 }
 
 void printStatus() {
@@ -134,21 +128,36 @@ void timer() {
 }
 
 
-int main(void) {
+// int main(void) {
 
-  // timeA = clock();
-  // for (;;) {
-  //     timer();
-  // }
+//   // timeA = clock();
+//   // for (;;) {
+//   //     timer();
+//   // }
 
-  // return 0;
+//   // return 0;
 
+//   wiringPiSetup();
+//   pinMode(PIN_A, INPUT);
+//   pinMode(PIN_B, INPUT);
+
+//   for (;;) {
+//       loop();
+//   }
+
+//   return 0;
+// }
+
+
+int main() {
   wiringPiSetup();
   pinMode(PIN_A, INPUT);
   pinMode(PIN_B, INPUT);
 
+  wiringPiISR (8, INT_EDGE_FALLING, loop) ;
+
   for (;;) {
-      loop();
+      sleep(99999999);
   }
 
   return 0;
