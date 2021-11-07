@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
+#include <string.h>
 
 #define PIN_A 8
 #define PIN_B 9
@@ -57,7 +58,7 @@ void setStartTime() {
 void update() {
     double interruptTime = getTime();
 
-    if (interruptTime - lastInterruptTime < 0.001) {
+    if (interruptTime - lastInterruptTime < 0.0005) {
         printf("debounced!\n");
     } else {
         moving = 1;
@@ -69,9 +70,33 @@ void update() {
 
 void runEvent() {
     double totalDistance = getAmountUsed(totalMovement);
+    int distanceInt = (int) totalDistance;
 
     printf("%.0f inches used \n", (double) totalDistance);
     printf("This is when it would say the thing\n");
+
+    char command[300];
+    char rootCmd[] = "mp3wrap output.mp3 audio/yhy.mp3";
+    char endCmd[] = " audio/gby.mp3 && omxplayer output_MP3WRAP.mp3 --vol -2000 && rm output_MP3WRAP.mp3";
+
+    strcpy(command, rootCmd);
+
+    if (distanceInt == 1) {
+        strcat(command, " audio/oneinch.mp3");
+        strcat(command, endCmd);
+    } else {
+        char snum[10];
+        sprintf(snum, "%d", distanceInt);
+
+        strcat(command, " audio/_");
+        strcat(command, snum);
+        strcat(command, ".mp3");
+        strcat(command, " audio/inches.mp3");
+        strcat(command, endCmd);
+    }
+    printf(command);
+    printf("\n");
+    system(command);
 }
 
 void resetState() {
@@ -86,10 +111,10 @@ void triggerEvent() {
             runEvent();
             resetState();
         } else {
-            printf("not long enough since last trigger\n");
+            // printf("not long enough since last trigger\n");
         }
     } else {
-        printf("wheel hasn't moved since last trigger\n");
+        // printf("wheel hasn't moved since last trigger\n");
     }
 }
 
