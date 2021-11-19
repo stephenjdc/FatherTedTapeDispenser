@@ -22,6 +22,9 @@ int totalMovement = 0;
 // track if an event is in progress
 int moving = 0;
 
+// track whether to use an alt output device
+int altOutputDevice = 0;
+
 double startTime = 0;
 double endTime = 0;
 
@@ -77,7 +80,14 @@ void runEvent() {
 
     char command[300];
     char rootCmd[] = "mp3wrap output.mp3 audio/yhy.mp3";
-    char endCmd[] = " audio/gby.mp3 && omxplayer output_MP3WRAP.mp3 --vol -2000 && rm output_MP3WRAP.mp3";
+
+    char endCmd[200];
+    strcpy(endCmd, " audio/gby.mp3 && omxplayer ");
+    if (altOutputDevice == 1) {
+        strcat(endCmd, "-o alsa:hw:1,0");
+    }
+    strcat(endCmd, " output_MP3WRAP.mp3 --vol -2000 && rm output_MP3WRAP.mp3");
+    // char endCmd[] = " audio/gby.mp3 && omxplayer -o alsa:hw:1,0 output_MP3WRAP.mp3 --vol -2000 && rm output_MP3WRAP.mp3";
 
     strcpy(command, rootCmd);
 
@@ -142,7 +152,21 @@ void pinB() {
 
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    // printf("Starting GodBless...");
+    // printf("%i arguments\n", argc);
+
+    if (argc > 1) {
+        if (strcmp(argv[1], "--usb") == 0) {
+            altOutputDevice = 1;
+            printf("Using USB audio...\n");
+        } else {
+            printf("Using built-in audio\n");
+        }
+    } else {
+        printf("Using built-in audio\n");
+    }
+
     wiringPiSetup();
     pinMode(PIN_A, INPUT);
 
