@@ -12,7 +12,7 @@
 #define EVENT_END_WAIT_TIME 0.5
 #define SLEEP_TIME 500000
 
-double lastInterruptTime = 0;
+// double lastInterruptTime = 0;
 
 int secondsMultiplier = 1000000;
 
@@ -26,8 +26,8 @@ double startTime = 0;
 double endTime = 0;
 
 int getAmountUsed(int ticks) {
-    int ticksPerRotation = 24;
-    double rollRadiusInInches = 2;
+    int ticksPerRotation = 22;
+    double rollRadiusInInches = 1.5;
     double circumferenceInInches = M_PI * 2 * rollRadiusInInches;
 
     double numberOfTurns = (double) ticks / (double) ticksPerRotation; 
@@ -56,16 +56,16 @@ void setStartTime() {
 }
 
 void update() {
-    double interruptTime = getTime();
+    // double interruptTime = getTime();
 
-    if (interruptTime - lastInterruptTime < 0.0005) {
-        printf("debounced!\n");
-    } else {
-        moving = 1;
-        totalMovement++;
-        endTime = getTime();
-        lastInterruptTime = interruptTime;
-    }
+    // if ((interruptTime - lastInterruptTime) < 0.0005) {
+    //     printf("debounced!\n");
+    // } else {
+    moving = 1;
+    totalMovement++;
+    endTime = getTime();
+    // lastInterruptTime = getTime();
+    // }
 }
 
 void runEvent() {
@@ -118,14 +118,40 @@ void triggerEvent() {
     }
 }
 
+int pinATriggered = 0;
+int pinBTriggered = 1;
+
+void updateTest() {
+    printf("Tick\n");
+}
+
+void pinA() {
+    if (pinATriggered == 0 && pinBTriggered == 1) {
+        update();
+
+        pinATriggered = 1;
+        pinBTriggered = 0;
+    }
+}
+
+void pinB() {
+    if (pinATriggered == 1 && pinBTriggered == 0) {
+        pinATriggered = 0;
+        pinBTriggered = 1;
+    }
+
+}
+
 int main() {
     wiringPiSetup();
     pinMode(PIN_A, INPUT);
 
     startTime = getTime();
-    lastInterruptTime = getTime();
+    // lastInterruptTime = getTime();
 
-    wiringPiISR (PIN_A, INT_EDGE_FALLING, update) ;
+    // wiringPiISR (PIN_A, INT_EDGE_FALLING, update) ;
+    wiringPiISR (PIN_A, INT_EDGE_FALLING, pinA) ;
+    wiringPiISR (PIN_B, INT_EDGE_FALLING, pinB) ;
 
     // check for event every x seconds
     for (;;) {
