@@ -24,6 +24,7 @@ int moving = 0;
 
 // track whether to use an alt output device
 int altOutputDevice = 0;
+char volume[300] = "-2000";
 
 double startTime = 0;
 double endTime = 0;
@@ -86,7 +87,9 @@ void runEvent() {
     if (altOutputDevice == 1) {
         strcat(endCmd, "-o alsa:hw:1,0");
     }
-    strcat(endCmd, " output_MP3WRAP.mp3 --vol -2000 && rm output_MP3WRAP.mp3");
+    strcat(endCmd, " output_MP3WRAP.mp3 --vol ");
+    strcat(endCmd, volume);
+    strcat(endCmd, " && rm output_MP3WRAP.mp3");
     // char endCmd[] = " audio/gby.mp3 && omxplayer -o alsa:hw:1,0 output_MP3WRAP.mp3 --vol -2000 && rm output_MP3WRAP.mp3";
 
     strcpy(command, rootCmd);
@@ -165,6 +168,11 @@ int main(int argc, char* argv[]) {
         }
     } else {
         printf("Using built-in audio\n");
+    }
+
+    if (argc > 2) {
+        strcpy(volume, argv[2]);
+        printf("Setting volume to %s\n", volume);
     }
 
     wiringPiSetup();
