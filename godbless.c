@@ -112,6 +112,19 @@ void runEvent() {
     system(command);
 }
 
+void startup() {
+    char startCmd[200];
+    strcpy(startCmd, "omxplayer ");
+
+    if (altOutputDevice == 1) {
+        strcat(startCmd, "-o alsa:hw:1,0");
+    }
+
+    strcat(startCmd, " audio/inches.mp3 --vol ");
+    strcat(startCmd, volume);
+    system(startCmd);
+}
+
 void resetState() {
     moving = 0;
     totalMovement = 0;
@@ -174,6 +187,8 @@ int main(int argc, char* argv[]) {
         strcpy(volume, argv[2]);
         printf("Setting volume to %s\n", volume);
     }
+
+    startup();
 
     wiringPiSetup();
     pinMode(PIN_A, INPUT);

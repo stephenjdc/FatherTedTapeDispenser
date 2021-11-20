@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /home/pi/godbless
-./godbless --builtin -500
+./godbless --usb -500
