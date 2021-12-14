@@ -31,7 +31,7 @@ double endTime = 0;
 
 int getAmountUsed(int ticks) {
     int ticksPerRotation = 22;
-    double rollRadiusInInches = 1.5;
+    double rollRadiusInInches = 1.854;
     double circumferenceInInches = M_PI * 2 * rollRadiusInInches;
 
     double numberOfTurns = (double) ticks / (double) ticksPerRotation; 
@@ -83,33 +83,65 @@ void runEvent() {
     char rootCmd[] = "mp3wrap output.mp3 audio/yhy.mp3";
 
     char endCmd[200];
-    strcpy(endCmd, " audio/gby.mp3 && omxplayer ");
+    strcpy(endCmd, " audio/end.mp3 audio/gby.mp3 && omxplayer ");
     if (altOutputDevice == 1) {
         strcat(endCmd, "-o alsa:hw:1,0");
     }
     strcat(endCmd, " output_MP3WRAP.mp3 --vol ");
     strcat(endCmd, volume);
     strcat(endCmd, " && rm output_MP3WRAP.mp3");
-    // char endCmd[] = " audio/gby.mp3 && omxplayer -o alsa:hw:1,0 output_MP3WRAP.mp3 --vol -2000 && rm output_MP3WRAP.mp3";
 
     strcpy(command, rootCmd);
 
-    if (distanceInt == 1) {
-        strcat(command, " audio/oneinch.mp3");
-        strcat(command, endCmd);
-    } else {
-        char snum[10];
-        sprintf(snum, "%d", distanceInt);
+    int feet = distanceInt / 12;
+    int inches = distanceInt % 12;
 
-        strcat(command, " audio/_");
-        strcat(command, snum);
-        strcat(command, ".mp3");
-        strcat(command, " audio/inches.mp3");
-        strcat(command, endCmd);
+    // get foot as string
+    char feetString[10];
+    sprintf(feetString, "%d", feet);
+
+    char inchString[10];
+    sprintf(inchString, "%d", inches);
+
+    if (feet == 0 && inches == 0) {
+
+    } else {
+        // add the feet if needed
+        if (feet == 0) {
+            // do nothing
+        } else if (feet == 1) {
+            // add one foot
+            strcat(command, " audio/_1.mp3");
+            strcat(command, " audio/_foot.mp3");
+        } else {
+            // add multiple feet
+            strcat(command, " audio/_");
+            strcat(command, feetString);
+            strcat(command, ".mp3");
+            strcat(command, " audio/_feet.mp3");
+        }
+
+        if (inches == 0) {
+            // do nothing
+        } else if (inches == 1) {
+            // add one inch
+            strcat(command, " audio/_1.mp3");
+            strcat(command, " audio/_inch.mp3");
+        } else {
+            // add multiple inches
+            strcat(command, " audio/_");
+            strcat(command, inchString);
+            strcat(command, ".mp3");
+            strcat(command, " audio/_inches.mp3");
+        }
     }
+
+
+    strcat(command, endCmd);
+
     printf(command);
     printf("\n");
-    system(command);
+    // system(command);
 }
 
 void startup() {
@@ -120,7 +152,7 @@ void startup() {
         strcat(startCmd, "-o alsa:hw:1,0");
     }
 
-    strcat(startCmd, " audio/inches.mp3 --vol ");
+    strcat(startCmd, " audio/start.mp3 --vol ");
     strcat(startCmd, volume);
     system(startCmd);
 }
