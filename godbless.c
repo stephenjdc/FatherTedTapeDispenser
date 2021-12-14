@@ -83,7 +83,7 @@ void runEvent() {
     char rootCmd[] = "mp3wrap output.mp3 audio/yhy.mp3";
 
     char endCmd[200];
-    strcpy(endCmd, " audio/end.mp3 audio/gby.mp3 && omxplayer ");
+    strcpy(endCmd, " audio/end.mp3 audio/gby.mp3 && omxplayer");
     if (altOutputDevice == 1) {
         strcat(endCmd, "-o alsa:hw:1,0");
     }
@@ -104,7 +104,8 @@ void runEvent() {
     sprintf(inchString, "%d", inches);
 
     if (feet == 0 && inches == 0) {
-
+        strcat(command, " audio/_lt1.mp3");
+        strcat(command, " audio/_inch.mp3");
     } else {
         // add the feet if needed
         if (feet == 0) {
@@ -141,7 +142,7 @@ void runEvent() {
 
     printf(command);
     printf("\n");
-    // system(command);
+    system(command);
 }
 
 void startup() {
@@ -152,7 +153,7 @@ void startup() {
         strcat(startCmd, "-o alsa:hw:1,0");
     }
 
-    strcat(startCmd, " audio/start.mp3 --vol ");
+    strcat(startCmd, " audio/gby.mp3 --vol ");
     strcat(startCmd, volume);
     system(startCmd);
 }
@@ -205,6 +206,14 @@ int main(int argc, char* argv[]) {
     // printf("%i arguments\n", argc);
 
     if (argc > 1) {
+
+        if (strcmp(argv[1], "debug") == 0) {
+            totalMovement = atoi(argv[2]);
+            runEvent();
+            printf("--debug mode, exiting\n");
+            return 0;
+        }
+
         if (strcmp(argv[1], "--usb") == 0) {
             altOutputDevice = 1;
             printf("Using USB audio...\n");
