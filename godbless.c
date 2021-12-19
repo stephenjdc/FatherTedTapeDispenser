@@ -83,7 +83,7 @@ void runEvent() {
     char rootCmd[] = "mp3wrap output.mp3 audio/yhy.mp3";
 
     char endCmd[200];
-    strcpy(endCmd, " audio/end.mp3 audio/gby.mp3 && omxplayer");
+    strcpy(endCmd, " audio/ost.mp3 audio/gby.mp3 && omxplayer");
     if (altOutputDevice == 1) {
         strcat(endCmd, "-o alsa:hw:1,0");
     }
@@ -104,7 +104,7 @@ void runEvent() {
     sprintf(inchString, "%d", inches);
 
     if (feet == 0 && inches == 0) {
-        strcat(command, " audio/_lt1.mp3");
+        strcat(command, " audio/_1.mp3");
         strcat(command, " audio/_inch.mp3");
     } else {
         // add the feet if needed
