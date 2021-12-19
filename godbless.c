@@ -205,6 +205,9 @@ int main(int argc, char* argv[]) {
     // printf("Starting GodBless...");
     // printf("%i arguments\n", argc);
 
+    printf("removing any existing output files...");
+    system("rm output_MP3WRAP.mp3");
+
     if (argc > 1) {
 
         if (strcmp(argv[1], "debug") == 0) {
