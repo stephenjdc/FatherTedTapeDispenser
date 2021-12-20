@@ -29,6 +29,8 @@ char volume[300] = "-2000";
 double startTime = 0;
 double endTime = 0;
 
+int playing = 0;
+
 int getAmountUsed(int ticks) {
     int ticksPerRotation = 22;
     double rollRadiusInInches = 1.854;
@@ -142,7 +144,9 @@ void runEvent() {
 
     printf(command);
     printf("\n");
+    playing = 1;
     system(command);
+    playing = 0;
 }
 
 void startup() {
@@ -185,6 +189,11 @@ void updateTest() {
 }
 
 void pinA() {
+    // ignore interrupt if sound playing (not sure if this is needed?)
+    if (playing == 1) {
+        return;
+    }
+
     if (pinATriggered == 0 && pinBTriggered == 1) {
         update();
 
@@ -194,6 +203,11 @@ void pinA() {
 }
 
 void pinB() {
+    // ignore interrupt if sound playing (not sure if this is needed?)
+    if (playing == 1) {
+        return;
+    }
+
     if (pinATriggered == 1 && pinBTriggered == 0) {
         pinATriggered = 0;
         pinBTriggered = 1;
@@ -205,7 +219,7 @@ int main(int argc, char* argv[]) {
     // printf("Starting GodBless...");
     // printf("%i arguments\n", argc);
 
-    printf("removing any existing output files...");
+    printf("removing any existing output files...\n");
     system("rm output_MP3WRAP.mp3");
 
     if (argc > 1) {
