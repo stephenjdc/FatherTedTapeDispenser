@@ -29,8 +29,6 @@ char volume[300] = "-2000";
 double startTime = 0;
 double endTime = 0;
 
-int playing = 0;
-
 int getAmountUsed(int ticks) {
     int ticksPerRotation = 22;
     double rollRadiusInInches = 1.854;
@@ -143,10 +141,8 @@ void runEvent() {
 
     printf(command);
     printf("\n");
-    playing = 1;
     system(command);
     system("rm -f output_MP3WRAP.mp3");
-    playing = 0;
 }
 
 void startup() {
@@ -189,11 +185,6 @@ void updateTest() {
 }
 
 void pinA() {
-    // ignore interrupt if sound playing (not sure if this is needed?)
-    if (playing == 1) {
-        return;
-    }
-
     if (pinATriggered == 0 && pinBTriggered == 1) {
         update();
 
@@ -203,11 +194,6 @@ void pinA() {
 }
 
 void pinB() {
-    // ignore interrupt if sound playing (not sure if this is needed?)
-    if (playing == 1) {
-        return;
-    }
-
     if (pinATriggered == 1 && pinBTriggered == 0) {
         pinATriggered = 0;
         pinBTriggered = 1;
@@ -224,12 +210,12 @@ int main(int argc, char* argv[]) {
 
     if (argc > 1) {
 
-        if (strcmp(argv[1], "debug") == 0) {
-            totalMovement = atoi(argv[2]);
-            runEvent();
-            printf("--debug mode, exiting\n");
-            return 0;
-        }
+        // if (strcmp(argv[1], "debug") == 0) {
+        //     totalMovement = atoi(argv[2]);
+        //     runEvent();
+        //     printf("--debug mode, exiting\n");
+        //     return 0;
+        // }
 
         if (strcmp(argv[1], "--usb") == 0) {
             altOutputDevice = 1;
@@ -259,8 +245,8 @@ int main(int argc, char* argv[]) {
     wiringPiISR (PIN_B, INT_EDGE_FALLING, pinB) ;
 
     // for debug purposes
-    totalMovement = 10;
-    runEvent();
+    // totalMovement = 10;
+    // runEvent();
     ///
 
     // check for event every x seconds
