@@ -91,7 +91,6 @@ void runEvent() {
     }
     strcat(endCmd, " output_MP3WRAP.mp3 --vol ");
     strcat(endCmd, volume);
-    strcat(endCmd, " && rm output_MP3WRAP.mp3");
 
     strcpy(command, rootCmd);
 
@@ -146,6 +145,7 @@ void runEvent() {
     printf("\n");
     playing = 1;
     system(command);
+    system("rm -f output_MP3WRAP.mp3");
     playing = 0;
 }
 
@@ -220,7 +220,7 @@ int main(int argc, char* argv[]) {
     // printf("%i arguments\n", argc);
 
     printf("removing any existing output files...\n");
-    system("rm output_MP3WRAP.mp3");
+    system("rm -f output_MP3WRAP.mp3");
 
     if (argc > 1) {
 

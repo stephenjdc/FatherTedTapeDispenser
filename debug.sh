@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cd /home/pi/godbless
-rm output_MP3WRAP.mp3
+rm -f output_MP3WRAP.mp3
 ./godbless >> log.log
