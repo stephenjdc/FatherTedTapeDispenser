@@ -12,8 +12,6 @@
 #define EVENT_END_WAIT_TIME 0.5
 #define SLEEP_TIME 500000
 
-// double lastInterruptTime = 0;
-
 int secondsMultiplier = 1000000;
 
 // the total movement for this event
@@ -31,6 +29,9 @@ double endTime = 0;
 
 int playing = 0;
 
+int pinATriggered = 0;
+int pinBTriggered = 1;
+
 int getAmountUsed(int ticks) {
     int ticksPerRotation = 22;
     double rollRadiusInInches = 1.854;
@@ -42,7 +43,6 @@ int getAmountUsed(int ticks) {
 }
 
 double getTime() {
-    // long int start_time;
 	struct timespec gettime_now;
 
 	clock_gettime(CLOCK_REALTIME, &gettime_now);
@@ -62,16 +62,9 @@ void setStartTime() {
 }
 
 void update() {
-    // double interruptTime = getTime();
-
-    // if ((interruptTime - lastInterruptTime) < 0.0005) {
-    //     printf("debounced!\n");
-    // } else {
     moving = 1;
     totalMovement++;
     endTime = getTime();
-    // lastInterruptTime = getTime();
-    // }
 }
 
 void runEvent() {
@@ -181,9 +174,6 @@ void triggerEvent() {
     }
 }
 
-int pinATriggered = 0;
-int pinBTriggered = 1;
-
 void updateTest() {
     printf("Tick\n");
 }
@@ -216,10 +206,8 @@ void pinB() {
 }
 
 int main(int argc, char* argv[]) {
-    // printf("Starting GodBless...");
-    // printf("%i arguments\n", argc);
-
-    printf("removing any existing output files...\n");
+    printf("Starting GodBless...\n");
+    printf("Removing any existing output files...\n");
     system("rm output_MP3WRAP.mp3");
 
     if (argc > 1) {
@@ -252,9 +240,7 @@ int main(int argc, char* argv[]) {
     pinMode(PIN_A, INPUT);
 
     startTime = getTime();
-    // lastInterruptTime = getTime();
 
-    // wiringPiISR (PIN_A, INT_EDGE_FALLING, update) ;
     wiringPiISR (PIN_A, INT_EDGE_FALLING, pinA) ;
     wiringPiISR (PIN_B, INT_EDGE_FALLING, pinB) ;
 
