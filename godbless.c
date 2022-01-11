@@ -1,3 +1,19 @@
+/*******************************************************
+
+* Copyright (C) 2022 Stephen Coyle <stephenjdc@gmail.com>
+
+*
+
+* This file is part of Godbless.
+
+*
+
+* Godbless can not be copied and/or distributed without the express
+
+* permission of Stephen Coyle
+
+*******************************************************/
+
 #include <stdio.h>
 #include <wiringPi.h>
 #include <time.h>
