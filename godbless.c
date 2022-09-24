@@ -1,17 +1,12 @@
 /*******************************************************
-
+*
 * Copyright (C) 2022 Stephen Coyle <stephenjdc@gmail.com>
-
 *
-
 * This file is part of Godbless.
-
 *
-
 * Godbless can not be copied and/or distributed without the express
-
 * permission of Stephen Coyle
-
+*
 *******************************************************/
 
 #include <stdio.h>
@@ -52,20 +47,15 @@ int getAmountUsed(int ticks) {
     int ticksPerRotation = 22;
     double rollRadiusInInches = 1.854;
     double circumferenceInInches = M_PI * 2 * rollRadiusInInches;
-
     double numberOfTurns = (double) ticks / (double) ticksPerRotation; 
-
     return circumferenceInInches * numberOfTurns;
 }
 
 double getTime() {
-	struct timespec gettime_now;
-
-	clock_gettime(CLOCK_REALTIME, &gettime_now);
-
+    struct timespec gettime_now;
+    clock_gettime(CLOCK_REALTIME, &gettime_now);
     double seconds = gettime_now.tv_sec;
     double billion = 1000000000;
-
     return seconds + (gettime_now.tv_nsec / billion);
 }
 
@@ -147,7 +137,6 @@ void runEvent() {
             strcat(command, " audio/_inches.mp3");
         }
     }
-
 
     strcat(command, endCmd);
 
